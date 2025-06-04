@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coqui TTS Voice Cloning Demo</title>
+</head>
+<body>
+  <h1>Coqui TTS Voice Cloning Demo</h1>
+  <input type="file" id="fileInput" accept="audio/wav"><br>
+  <textarea id="textInput" rows="4" cols="50" placeholder="Enter text here"></textarea><br>
+  <button id="speakBtn">Speak</button><br>
+  <audio id="audio" controls></audio>
+  <script>
+    document.getElementById('speakBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const text = document.getElementById('textInput').value;
+      const formData = new FormData();
+      formData.append('text', text);
+      if (fileInput.files[0]) {
+        formData.append('speaker_wav', fileInput.files[0]);
+      }
+      const response = await fetch('http://localhost:5002/api/tts', {
+        method: 'POST',
+        body: formData,
+      });
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+      const audioURL = URL.createObjectURL(blob);
+      const audio = document.getElementById('audio');
+      audio.src = audioURL;
+      audio.play();
+    });
+  </script>
+</body>
+</html>
