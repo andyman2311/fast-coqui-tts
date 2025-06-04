@@ -1,0 +1,1 @@
+#This is the docker file for coqui tts as a server so i can clone and gererate audio
